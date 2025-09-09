@@ -7,7 +7,7 @@ HTML = """
 <!DOCTYPE html>
 <html>
 <head>
-    <title>HARSHU UID GENERATER</title>
+    <title>HARSHU UID GENERATER - DEBUG</title>
     <style>
         body {
             font-family: 'Segoe UI', sans-serif;
@@ -17,104 +17,27 @@ HTML = """
             padding: 20px;
             min-height: 100vh;
         }
-        h1 {
-            color: #4f9cff;
-            margin-bottom: 20px;
-            text-shadow: 2px 2px 8px rgba(0,0,0,0.5);
-        }
-        form {
-            margin: 20px auto;
-            padding: 20px;
-            background: rgba(255,255,255,0.07);
-            border-radius: 15px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
-            width: 60%;
-        }
-        input {
-            padding: 12px;
-            width: 65%;
-            border-radius: 10px;
-            border: none;
-            outline: none;
-            margin-right: 10px;
-        }
-        button {
-            padding: 12px 20px;
-            background: #4f9cff;
-            color: #fff;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: 0.3s;
-        }
-        button:hover {
-            background: #357ae8;
-        }
-        #loader {
-            display: none;
-            margin: 20px auto;
-        }
-        .spinner {
-            border: 6px solid rgba(255,255,255,0.2);
-            border-top: 6px solid #4f9cff;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: auto;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg);}
-            100% { transform: rotate(360deg);}
-        }
-        table {
-            margin: 30px auto;
-            border-collapse: collapse;
-            width: 85%;
-            background: rgba(255,255,255,0.05);
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-        }
-        th, td {
-            padding: 14px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-        }
-        th {
-            background: rgba(79,156,255,0.2);
-            color: #4f9cff;
-            font-size: 18px;
-        }
-        tr:hover {
-            background: rgba(255,255,255,0.08);
-        }
-        .copy-btn {
-            background: #28a745;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 6px;
-            color: white;
-            font-size: 13px;
-            cursor: pointer;
-        }
-        .copy-btn:hover {
-            background: #218838;
-        }
-        footer {
-            margin-top: 50px;
-            font-size: 14px;
-            color: #aaa;
-        }
-        footer a {
-            color: #4f9cff;
-            text-decoration: none;
-            font-weight: bold;
-        }
+        h1 { color:#4f9cff; margin-bottom:20px; text-shadow:2px 2px 8px rgba(0,0,0,0.5); }
+        form { margin:20px auto; padding:20px; background: rgba(255,255,255,0.07); border-radius:15px; box-shadow:0 4px 20px rgba(0,0,0,0.4); width:60%; }
+        input { padding:12px; width:65%; border-radius:10px; border:none; outline:none; margin-right:10px; }
+        button { padding:12px 20px; background:#4f9cff; color:#fff; border:none; border-radius:10px; cursor:pointer; font-weight:bold; transition:0.3s; }
+        button:hover { background:#357ae8; }
+        #loader { display:none; margin:20px auto; }
+        .spinner { border:6px solid rgba(255,255,255,0.2); border-top:6px solid #4f9cff; border-radius:50%; width:40px; height:40px; animation:spin 1s linear infinite; margin:auto; }
+        @keyframes spin {0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}
+        table { margin:30px auto; border-collapse: collapse; width:85%; background: rgba(255,255,255,0.05); border-radius:12px; overflow:hidden; box-shadow:0 4px 20px rgba(0,0,0,0.3);}
+        th, td { padding:14px; border-bottom:1px solid rgba(255,255,255,0.1);}
+        th { background: rgba(79,156,255,0.2); color:#4f9cff; font-size:18px; }
+        tr:hover { background: rgba(255,255,255,0.08); }
+        .copy-btn { background:#28a745; border:none; padding:6px 12px; border-radius:6px; color:white; font-size:13px; cursor:pointer;}
+        .copy-btn:hover { background:#218838; }
+        footer { margin-top:50px; font-size:14px; color:#aaa; }
+        footer a { color:#4f9cff; text-decoration:none; font-weight:bold; }
+        pre { text-align:left; background: rgba(0,0,0,0.4); padding:10px; border-radius:10px; overflow-x:auto;}
     </style>
 </head>
 <body>
-    <h1>🔐 HARSHU UID GENERATER</h1>
+    <h1>🔐 HARSHU UID GENERATER - DEBUG</h1>
     <form id="form">
         <input type="text" name="access_token" placeholder="Paste Access Token" required>
         <button type="submit">Get Groups</button>
@@ -140,12 +63,12 @@ document.getElementById('form').onsubmit = async (e)=>{
 
     document.getElementById('loader').style.display = "none";
 
-    if(data.error){
-        document.getElementById('output').innerHTML = "<p style='color:red;'>"+data.error+"</p>";
-        return;
-    }
+    // Debug: Show full JSON
+    let html = "<h2>Raw JSON Response:</h2><pre>"+JSON.stringify(data,null,2)+"</pre>";
+
+    // If groups exist, show table
     if(data.data && data.data.length > 0){
-        let html = "<table><tr><th>Group Name</th><th>Group ID</th><th>Action</th></tr>";
+        html += "<h2>Groups Table:</h2><table><tr><th>Group Name</th><th>Group ID</th><th>Action</th></tr>";
         data.data.forEach(g=>{
             html += `<tr>
                         <td>${g.name}</td>
@@ -154,10 +77,9 @@ document.getElementById('form').onsubmit = async (e)=>{
                      </tr>`;
         });
         html += "</table>";
-        document.getElementById('output').innerHTML = html;
-    } else {
-        document.getElementById('output').innerHTML = "<p>No groups found.</p>";
     }
+
+    document.getElementById('output').innerHTML = html;
 };
 
 function copyId(id){
@@ -184,7 +106,9 @@ def get_groups():
         url = "https://graph.facebook.com/v19.0/me/groups"
         params = {"access_token": token, "fields": "id,name"}
         resp = requests.get(url, params=params)
-        return jsonify(resp.json())
+        data = resp.json()
+        print("DEBUG RESPONSE:", data)  # Console pe bhi output aayega
+        return jsonify(data)
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
