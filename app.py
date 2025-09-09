@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify, render_template_string
-import requests
+import requests, os
 
 app = Flask(__name__)
 
@@ -71,14 +71,14 @@ HTML = """
         table {
             margin: 30px auto;
             border-collapse: collapse;
-            width: 80%;
+            width: 85%;
             background: rgba(255,255,255,0.05);
             border-radius: 12px;
             overflow: hidden;
             box-shadow: 0 4px 20px rgba(0,0,0,0.3);
         }
         th, td {
-            padding: 12px;
+            padding: 14px;
             border-bottom: 1px solid rgba(255,255,255,0.1);
         }
         th {
@@ -88,6 +88,18 @@ HTML = """
         }
         tr:hover {
             background: rgba(255,255,255,0.08);
+        }
+        .copy-btn {
+            background: #28a745;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            color: white;
+            font-size: 13px;
+            cursor: pointer;
+        }
+        .copy-btn:hover {
+            background: #218838;
         }
         footer {
             margin-top: 50px;
@@ -133,9 +145,13 @@ document.getElementById('form').onsubmit = async (e)=>{
         return;
     }
     if(data.data && data.data.length > 0){
-        let html = "<table><tr><th>Group Name</th><th>Group ID</th></tr>";
+        let html = "<table><tr><th>Group Name</th><th>Group ID</th><th>Action</th></tr>";
         data.data.forEach(g=>{
-            html += `<tr><td>${g.name}</td><td>${g.id}</td></tr>`;
+            html += `<tr>
+                        <td>${g.name}</td>
+                        <td id="gid-${g.id}">${g.id}</td>
+                        <td><button class="copy-btn" onclick="copyId('${g.id}')">Copy</button></td>
+                     </tr>`;
         });
         html += "</table>";
         document.getElementById('output').innerHTML = html;
@@ -143,6 +159,12 @@ document.getElementById('form').onsubmit = async (e)=>{
         document.getElementById('output').innerHTML = "<p>No groups found.</p>";
     }
 };
+
+function copyId(id){
+    navigator.clipboard.writeText(id).then(()=>{
+        alert("Copied Group ID: " + id);
+    });
+}
 </script>
 </body>
 </html>
@@ -165,8 +187,6 @@ def get_groups():
         return jsonify(resp.json())
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-
-import os
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
